@@ -1,0 +1,53 @@
+version: "2"
+linters:
+  default: standard
+  enable:
+    - depguard
+    - unconvert
+  settings:
+    errcheck:
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+    depguard:
+      rules:
+        domain:
+          list-mode: lax
+          files:
+            - "**/internal/domain/**"
+          deny:
+            - pkg: github.com/feierabendgewitter/boxai/internal/app
+              desc: domain darf app nicht importieren
+            - pkg: github.com/feierabendgewitter/boxai/internal/adapter
+              desc: domain darf keine Adapter importieren
+            - pkg: os
+              desc: domain führt keine I/O aus
+            - pkg: net
+              desc: domain führt keine I/O aus
+            - pkg: gopkg.in/yaml.v3
+              desc: domain kennt kein YAML
+            - pkg: github.com/spf13/cobra
+              desc: domain kennt kein CLI
+        app:
+          list-mode: lax
+          files:
+            - "**/internal/app/**"
+          deny:
+            - pkg: github.com/feierabendgewitter/boxai/internal/adapter
+              desc: app darf keine Adapter importieren
+            - pkg: os
+              desc: app führt I/O nur über Ports aus
+            - pkg: net
+              desc: app führt I/O nur über Ports aus
+            - pkg: gopkg.in/yaml.v3
+              desc: Formate gehören in Adapter
+            - pkg: github.com/spf13/cobra
+              desc: CLI gehört in den Driving Adapter
+        adapter-in:
+          list-mode: lax
+          files:
+            - "**/internal/adapter/in/**"
+          deny:
+            - pkg: github.com/feierabendgewitter/boxai/internal/adapter/out
+              desc: Verdrahtung nur im Composition Root
