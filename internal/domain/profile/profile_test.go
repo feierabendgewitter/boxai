@@ -112,3 +112,12 @@ func TestNames(t *testing.T) {
 		t.Fatal(got)
 	}
 }
+
+func TestAllHosts(t *testing.T) {
+	got := AllHosts()
+	for _, want := range []string{"github.com", "plugins.gradle.org", "registry.npmjs.org"} {
+		if !slices.Contains(got, want) {
+			t.Errorf("%s fehlt in %v", want, got)
+		}
+	}
+}

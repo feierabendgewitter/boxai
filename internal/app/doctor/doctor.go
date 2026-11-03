@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/feierabendgewitter/boxai/internal/app/port"
+	"github.com/feierabendgewitter/boxai/internal/domain/profile"
 )
 
 // MinSbxVersion ist die älteste Version, gegen die boxai verifiziert wurde.
@@ -44,7 +45,31 @@ func (s *Service) Run(ctx context.Context, req port.DoctorRequest) port.DoctorRe
 		add(port.DoctorCheck{Name: "sbx login", Required: true, OK: ok, Detail: detail})
 	}
 	add(s.toolCheck(ctx, "docker", req.NeedDocker))
+	if req.Network {
+		for _, host := range profile.AllHosts() {
+			add(s.networkCheck(ctx, req.Sandbox, host))
+		}
+	}
 	return report
+}
+
+// networkCheck ist nie Pflicht: boxai gibt Hosts erst pro Sandbox frei, global dürfen sie fehlen.
+func (s *Service) networkCheck(ctx context.Context, sandbox, host string) port.DoctorCheck {
+	// Die Policy prüft konkrete Ziele; ein Muster steht hier für einen seiner Hosts.
+	target := strings.ReplaceAll(host, "**", "s3.eu-central-1")
+	check := port.DoctorCheck{Name: "netz " + host}
+	allowed, err := s.probe.NetworkAllowed(ctx, sandbox, target)
+	switch {
+	case err != nil:
+		check.Detail = err.Error()
+	case allowed:
+		check.OK = true
+	case sandbox == "":
+		check.Detail = "global gesperrt; boxai gibt den Host pro Sandbox frei"
+	default:
+		check.Detail = "in " + sandbox + " gesperrt"
+	}
+	return check
 }
 
 func (s *Service) toolCheck(ctx context.Context, name string, required bool) port.DoctorCheck {

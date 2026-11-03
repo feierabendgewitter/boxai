@@ -24,7 +24,7 @@ func newDoctorCmd(services func() Services) *cobra.Command {
 				case !c.OK:
 					mark = "○"
 				}
-				fmt.Fprintf(cmd.OutOrStdout(), "%s %-10s %s\n", mark, c.Name, c.Detail)
+				fmt.Fprintf(cmd.OutOrStdout(), "%s %-34s %s\n", mark, c.Name, c.Detail)
 			}
 			if !report.Healthy() {
 				return ErrUnhealthy
@@ -33,5 +33,7 @@ func newDoctorCmd(services func() Services) *cobra.Command {
 		},
 	}
 	cmd.Flags().BoolVar(&req.NeedDocker, "docker", false, "docker als Pflicht prüfen (für --dockerfile)")
+	cmd.Flags().BoolVar(&req.Network, "network", false, "Netzwerk-Freigaben der Profile gegen die sbx-Policy prüfen")
+	cmd.Flags().StringVar(&req.Sandbox, "sandbox", "", "--network im Kontext einer Sandbox prüfen, z. B. boxai-shop")
 	return cmd
 }

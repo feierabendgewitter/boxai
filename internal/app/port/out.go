@@ -28,6 +28,8 @@ type HostProbe interface {
 	Tool(ctx context.Context, name string) ToolInfo
 	// SbxAuthenticated meldet, ob `sbx` bei Docker angemeldet ist.
 	SbxAuthenticated(ctx context.Context) (bool, string)
+	// NetworkAllowed fragt die sbx-Policy; sandbox leer bedeutet globale Policy.
+	NetworkAllowed(ctx context.Context, sandbox, host string) (bool, error)
 }
 
 // RepoScanner findet lokale Git-Repos.

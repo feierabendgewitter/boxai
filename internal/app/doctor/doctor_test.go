@@ -2,6 +2,8 @@ package doctor
 
 import (
 	"context"
+	"errors"
+	"strings"
 	"testing"
 
 	"github.com/feierabendgewitter/boxai/internal/app/port"
@@ -14,6 +16,12 @@ type fakeProbe struct {
 
 func (f fakeProbe) Tool(_ context.Context, name string) port.ToolInfo { return f.tools[name] }
 func (f fakeProbe) SbxAuthenticated(context.Context) (bool, string)   { return f.auth, "" }
+func (f fakeProbe) NetworkAllowed(_ context.Context, sandbox, host string) (bool, error) {
+	if host == "registry.npmjs.org" {
+		return false, errors.New("daemon weg")
+	}
+	return host == "s3.eu-central-1.amazonaws.com" || sandbox != "" && host == "github.com", nil
+}
 
 func find(t *testing.T, r port.DoctorReport, name string) port.DoctorCheck {
 	t.Helper()
@@ -95,6 +103,39 @@ func TestAtLeast(t *testing.T) {
 	for _, tt := range tests {
 		if got := AtLeast(tt.have, tt.want); got != tt.ok {
 			t.Errorf("AtLeast(%q, %q) = %v", tt.have, tt.want, got)
+		}
+	}
+}
+
+func TestNetworkChecksAreOptionalAndExplained(t *testing.T) {
+	svc := New(fakeProbe{tools: healthyTools(), auth: true})
+	r := svc.Run(context.Background(), port.DoctorRequest{Network: true})
+	if !r.Healthy() {
+		t.Fatal("gesperrte Hosts dürfen doctor nicht scheitern lassen")
+	}
+	if !find(t, r, "netz **.amazonaws.com").OK {
+		t.Fatal("Muster nicht über einen konkreten Host geprüft")
+	}
+	if c := find(t, r, "netz github.com"); c.OK || !strings.Contains(c.Detail, "pro Sandbox") {
+		t.Fatalf("%+v", c)
+	}
+	if c := find(t, r, "netz registry.npmjs.org"); c.OK || !strings.Contains(c.Detail, "daemon weg") {
+		t.Fatalf("%+v", c)
+	}
+	r = svc.Run(context.Background(), port.DoctorRequest{Network: true, Sandbox: "boxai-x"})
+	if !find(t, r, "netz github.com").OK {
+		t.Fatal("Sandbox-Kontext ignoriert")
+	}
+	if c := find(t, r, "netz gitlab.com"); !strings.Contains(c.Detail, "boxai-x") {
+		t.Fatalf("%+v", c)
+	}
+}
+
+func TestNetworkChecksOnlyOnRequest(t *testing.T) {
+	r := New(fakeProbe{tools: healthyTools(), auth: true}).Run(context.Background(), port.DoctorRequest{})
+	for _, c := range r.Checks {
+		if strings.HasPrefix(c.Name, "netz") {
+			t.Fatal(c.Name)
 		}
 	}
 }

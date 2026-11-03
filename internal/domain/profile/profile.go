@@ -98,6 +98,19 @@ func Names() []string {
 	return names
 }
 
+// AllHosts liefert alle Freigaben der mitgelieferten Profile ohne Duplikate.
+func AllHosts() []string {
+	r, err := Resolve(Names(), nil)
+	if err != nil {
+		panic(err) // Names liefert nur bekannte Profile.
+	}
+	hosts := make([]string, len(r.Network))
+	for i, rule := range r.Network {
+		hosts[i] = rule.Host
+	}
+	return hosts
+}
+
 // Resolved ist die Kombination gewählter Profile.
 type Resolved struct {
 	Names   []string

@@ -4,6 +4,7 @@ package hostprobe
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"regexp"
 	"strings"
 	"time"
@@ -81,6 +82,30 @@ func (p *Probe) SbxAuthenticated(ctx context.Context) (bool, string) {
 		}
 	}
 	return false, "sbx diagnose meldet keinen Authentication-Status"
+}
+
+type policyCheck struct {
+	Allowed *bool `json:"allowed"`
+}
+
+// NetworkAllowed nutzt die Auswertung des Daemons. Exit 1 heißt dort „gesperrt“,
+// maßgeblich ist deshalb das JSON.
+func (p *Probe) NetworkAllowed(ctx context.Context, sandbox, host string) (bool, error) {
+	ctx, cancel := context.WithTimeout(ctx, probeTimeout)
+	defer cancel()
+	args := []string{"policy", "check", "network", "--json"}
+	if sandbox != "" {
+		args = append(args, "--sandbox", sandbox)
+	}
+	res, runErr := p.runner.Run(ctx, execx.Cmd{Name: "sbx", Args: append(args, host), ReadOnly: true})
+	var check policyCheck
+	if err := json.NewDecoder(strings.NewReader(res.Stdout)).Decode(&check); err != nil || check.Allowed == nil {
+		if runErr != nil {
+			return false, errors.New(firstLine(runErr.Error()))
+		}
+		return false, errors.New("sbx policy check liefert kein gültiges JSON")
+	}
+	return *check.Allowed, nil
 }
 
 func firstLine(s string) string {

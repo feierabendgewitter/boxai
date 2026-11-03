@@ -10,6 +10,10 @@ import (
 // DoctorRequest wählt optionale Prüfungen.
 type DoctorRequest struct {
 	NeedDocker bool
+	// Network prüft die Freigaben aller Profile gegen die sbx-Policy.
+	Network bool
+	// Sandbox bewertet Network im Kontext einer Sandbox statt global.
+	Sandbox string
 }
 
 // DoctorCheck ist das Ergebnis einer Prüfung.

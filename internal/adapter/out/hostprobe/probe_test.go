@@ -53,3 +53,26 @@ func TestAuthFromDiagnose(t *testing.T) {
 		t.Fatal("kaputtes JSON akzeptiert")
 	}
 }
+
+func TestNetworkAllowed(t *testing.T) {
+	r := &execxtest.Recorder{Responses: map[string]execxtest.Response{
+		"sbx policy check network --json github.com":                      {Stdout: `{"allowed":true}`},
+		"sbx policy check network --json --sandbox boxai-x nexus.example": {Stdout: `{"allowed":false}`, Err: errors.New("exit 1")},
+		"sbx policy check network --json kaputt.example":                  {Stdout: "kein json", Err: errors.New("daemon weg")},
+		"sbx policy check network --json leer.example":                    {Stdout: `{}`},
+	}}
+	p := New(r, found)
+	ctx := context.Background()
+	if ok, err := p.NetworkAllowed(ctx, "", "github.com"); !ok || err != nil {
+		t.Fatal(ok, err)
+	}
+	if ok, err := p.NetworkAllowed(ctx, "boxai-x", "nexus.example"); ok || err != nil {
+		t.Fatal(ok, err)
+	}
+	if _, err := p.NetworkAllowed(ctx, "", "kaputt.example"); err == nil || err.Error() != "daemon weg" {
+		t.Fatal(err)
+	}
+	if _, err := p.NetworkAllowed(ctx, "", "leer.example"); err == nil {
+		t.Fatal("JSON ohne allowed akzeptiert")
+	}
+}
