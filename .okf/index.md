@@ -19,6 +19,11 @@ okf_version: "0.2"
 - [gitcli](architecture/adapters/gitcli.md): Git-Operationen über das Binary.
 - [fsscan](architecture/adapters/fsscan.md): findet Repos im Dateisystem.
 - [kitfs](architecture/adapters/kitfs.md): schreibt den v3-Mixin.
+- [assetfs](architecture/adapters/assetfs.md): liest Agent- und Skill-Dateien, erkennt OKF-Bundles.
+- [sbxcli](architecture/adapters/sbxcli.md): Sandboxes und Secrets über `sbx`.
+- [dockerbuild](architecture/adapters/dockerbuild.md): baut und lädt Images.
+- [configfile](architecture/adapters/configfile.md): `boxai.yaml` und Secret-Dateien.
+- [statejson](architecture/adapters/statejson.md): Workspace-Zustand.
 
 ## Domäne
 

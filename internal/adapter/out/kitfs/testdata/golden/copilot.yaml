@@ -1,0 +1,53 @@
+# syntax=docker/sandbox-kit:3
+schemaVersion: "3"
+kind: mixin
+description: boxai-Workspace shop
+capabilities:
+  - type: com.docker.sandbox/lifecycle@1
+    config:
+      files:
+        - path: /home/agent/.copilot/agents/reviewer.md
+          content: |
+            # Reviewer
+          mode: "0644"
+        - path: /home/agent/.copilot/skills/lint/SKILL.md
+          content: |
+            ---
+            name: lint
+            ---
+            Regeln
+          mode: "0644"
+        - path: /home/agent/.npmrc
+          content: |
+            //registry.npmjs.org/:_authToken=${NPM_TOKEN}
+          mode: "0600"
+        - path: /ws/shop/AGENTS.md
+          content: |
+            # Workspace shop
+
+            Dieser Ordner bündelt mehrere Git-Worktrees. Jedes Unterverzeichnis ist ein eigenes Repo mit eigener Historie; committe im jeweiligen Repo.
+
+            ## Zuerst lesen
+
+            Projektkontext als OKF-Bundle; lies diese Dateien, bevor du im jeweiligen Repo arbeitest:
+
+            - `api/.okf/index.md`
+
+            ## Repos
+
+            | Repo | Branch | Anweisungen |
+            | --- | --- | --- |
+            | `api` | `boxai/shop` | – |
+
+            ## Stack
+
+            Profile: react
+
+            ## Build-Kommandos
+
+            Im jeweils passenden Repo:
+
+            - `npm ci`
+            - `npm test`
+            - `npm run build`
+          mode: "0644"

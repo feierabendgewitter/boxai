@@ -58,8 +58,9 @@ type Git struct {
 	FailOn map[string]error
 	// FailAddFor lässt AddWorktree für ein bestimmtes Repo scheitern.
 	FailAddFor string
-	// ExistingPaths sind Repos, die schon geklont sind.
-	ExistingPaths map[string]bool
+	// Missing sind Pfade ohne Repo; ein Clone legt sie an, außer im DryRun.
+	Missing map[string]bool
+	DryRun  bool
 }
 
 // NewGit erzeugt einen leeren Fake.
@@ -67,7 +68,7 @@ func NewGit() *Git {
 	return &Git{
 		Dirty: map[string]bool{}, Worktree: map[string]workspace.Worktree{},
 		Branches: map[string]bool{}, Clones: map[string]string{}, FailOn: map[string]error{},
-		ExistingPaths: map[string]bool{},
+		Missing: map[string]bool{},
 	}
 }
 
@@ -93,6 +94,9 @@ func (g *Git) Clone(_ context.Context, url, dest string) error {
 		return err
 	}
 	g.Clones[dest] = url
+	if !g.DryRun {
+		delete(g.Missing, dest)
+	}
 	return nil
 }
 
@@ -149,6 +153,9 @@ func (g *Git) DeleteBranch(_ context.Context, repo, branch string) error {
 
 // CommonDir implementiert port.GitRepository.
 func (g *Git) CommonDir(_ context.Context, path string) (string, error) {
+	if g.Missing[path] {
+		return "", errors.New("kein Repo: " + path)
+	}
 	return path + "/.git", g.FailOn["CommonDir"]
 }
 
@@ -255,7 +262,10 @@ type Kits struct {
 	Written  map[string]sandbox.KitSpec
 	Removed  []string
 	Builtins map[string]string
-	FailOn   map[string]error
+	// RootsRemoved und RootLeftovers betreffen RemoveWorkspaceRoot.
+	RootsRemoved  []string
+	RootLeftovers []string
+	FailOn        map[string]error
 }
 
 // NewKits erzeugt einen leeren Fake.
@@ -285,6 +295,13 @@ func (k *Kits) Remove(_ context.Context, dir string) error {
 	k.Removed = append(k.Removed, dir)
 	delete(k.Written, dir)
 	return k.FailOn["Remove"]
+}
+
+// RemoveWorkspaceRoot implementiert port.KitWriter.
+func (k *Kits) RemoveWorkspaceRoot(_ context.Context, path string) ([]string, error) {
+	k.Journal.Add("workspace-root remove")
+	k.RootsRemoved = append(k.RootsRemoved, path)
+	return k.RootLeftovers, k.FailOn["RemoveWorkspaceRoot"]
 }
 
 // Builtin implementiert port.KitWriter.
@@ -375,6 +392,11 @@ func (c *Config) LoadWorkspaceConfig(_ context.Context, path string) (port.Works
 // LoadGlobalConfig implementiert port.ConfigLoader.
 func (c *Config) LoadGlobalConfig(context.Context) (port.WorkspaceConfig, error) {
 	return c.Global, c.Err
+}
+
+// NormalizePath implementiert port.ConfigLoader; der Fake lässt Pfade unverändert.
+func (c *Config) NormalizePath(_ context.Context, path string) (string, error) {
+	return path, nil
 }
 
 // LoadSecrets implementiert port.ConfigLoader.

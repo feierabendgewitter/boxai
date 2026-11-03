@@ -1,9 +1,5 @@
 BIN := bin/boxai
 AGENTS := claude copilot
-GLAB_VERSION ?= 1.74.0
-PROFILE_LAYERS := kotlin react
-BASE_VARIANT_claude := claude-code
-BASE_VARIANT_copilot := copilot
 
 .PHONY: build test vet lint okf-lint check e2e images cover
 
@@ -33,4 +29,7 @@ e2e:
 
 # Baut alle Image-Varianten und lädt sie in die sbx-Runtime.
 images:
-	@for agent in $(AGENTS); do ./images/build.sh "$$agent" all; done
+	@for agent in $(AGENTS); do \
+		./images/build.sh "$$agent" all; \
+		./images/build.sh "$$agent" all --no-docker; \
+	done

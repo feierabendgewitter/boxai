@@ -62,7 +62,7 @@ func (e *ExitError) Error() string {
 	return fmt.Sprintf("%s: exit %d: %s", e.Command, e.Code, msg)
 }
 
-// ExitCode liefert den Code für die Übernahme in den boxai-Exit-Status.
+// ExitCode liefert den Exit-Code des Kommandos.
 func (e *ExitError) ExitCode() int { return e.Code }
 
 // Exec führt Kommandos wirklich aus.

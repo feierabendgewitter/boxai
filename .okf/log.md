@@ -1,5 +1,9 @@
 # Änderungshistorie
 
+## 2026-11-04
+
+**Phasen 4 bis 7:** Use Cases `CreateWorkspace` (Rollback, Idempotenz), `RemoveWorkspace`, `lifecycle`; Adapter `statejson`, `configfile`, `assetfs`, `kitfs`, `sbxcli`, `dockerbuild`; CLI vollständig; E2E-Suite gegen echtes sbx. Die Phasen hängen über den Composition Root zusammen und stehen deshalb in einem Commit.
+
 ## 2026-11-03
 
 **Phase 3:** Ports, Fakes (`porttest`), Adapter `fsscan` und `gitcli`, Use Case `ScanRepos`, `boxai scan`. Der Architekturtest liest nun die Quellen selbst, weil ein Cache-Treffer von `go test` einen Verstoß sonst verbarg.

@@ -2,8 +2,8 @@ package port
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/feierabendgewitter/boxai/internal/domain/sandbox"
 	"github.com/feierabendgewitter/boxai/internal/domain/workspace"
 )
 
@@ -120,7 +120,9 @@ type Lifecycle interface {
 	List(ctx context.Context) ([]WorkspaceInfo, error)
 }
 
-// SandboxLister ist für Adapter nützlich, die nur den Status brauchen.
-type SandboxLister interface {
-	List(ctx context.Context) ([]sandbox.Info, error)
+// AgentExit überträgt den Exit-Code des Agents auf boxai, ohne ihn als Fehler zu melden.
+type AgentExit struct {
+	Code int
 }
+
+func (e *AgentExit) Error() string { return fmt.Sprintf("agent endete mit Exit-Code %d", e.Code) }

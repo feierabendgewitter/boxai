@@ -75,6 +75,9 @@ type KitWriter interface {
 	Validate(ctx context.Context, dir string) error
 	// Remove entfernt den Kit-Ordner.
 	Remove(ctx context.Context, dir string) error
+	// RemoveWorkspaceRoot entfernt generierte Dateien und den Ordner, falls er danach
+	// leer ist. Fremde Einträge bleiben stehen und werden gemeldet.
+	RemoveWorkspaceRoot(ctx context.Context, path string) (leftovers []string, err error)
 	// Builtin stellt einen mitgelieferten Kit bereit und liefert seinen Ordner.
 	Builtin(ctx context.Context, name string) (string, error)
 }
@@ -134,6 +137,8 @@ type ConfigLoader interface {
 	// LoadGlobalConfig liest ~/.boxai/config.yaml; eine fehlende Datei ist kein Fehler.
 	LoadGlobalConfig(ctx context.Context) (WorkspaceConfig, error)
 	LoadSecrets(ctx context.Context, path string) ([]secret.SecretSpec, error)
+	// NormalizePath macht einen Pfad absolut und löst Symlinks auf, auch wenn er noch nicht existiert.
+	NormalizePath(ctx context.Context, path string) (string, error)
 }
 
 // WorkspaceStatus ist der Fortschritt eines Workspaces.
@@ -153,7 +158,9 @@ type WorkspaceState struct {
 	Agent       agent.Kind
 	KitDir      string
 	Status      WorkspaceStatus
-	Worktrees   []workspace.Worktree
+	// Planned sind alle vorgesehenen Worktrees, Worktrees die bereits angelegten.
+	Planned   []workspace.Worktree
+	Worktrees []workspace.Worktree
 	// CreatedBranches listet Branches, die boxai neu angelegt hat, als repoPfad → Branch.
 	CreatedBranches map[string]string
 	CreatedAt       time.Time

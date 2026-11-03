@@ -26,8 +26,10 @@ Geprüft am 2026-11-03 auf macOS (arm64) mit **sbx v0.51.0**. Diese Seite hat Vo
 - **Skills-Store:** Standardmäßig hängt sbx einen read-only Skills-Store über `~/.<agent>/skills`. Kit-Dateien dort scheitern mit `Read-only file system` und die Fehlermeldung lautet nur `failed to apply kit`. boxai setzt `--skills off`.
 - **Fehlerdetails:** Kit-Fehler stehen nur in `~/Library/Application Support/com.docker.sandboxes/sandboxes/sandboxd/daemon.log`.
 - **Hänger:** sbx 0.46.0 hing hier bei jedem Aufruf in `_dyld_start`, ohne Ausgabe; das Update auf 0.51.0 behob es. Die Ursache wurde nicht geklärt. `execx` setzt deshalb Zeitlimits, und `doctor` meldet ein antwortloses Binary.
-- **Teil-Maskierung:** `sbx secret ls --json` zeigt die ersten sechs Zeichen eines Werts. Der Adapter liest nur `placeholder` und gibt diese Ausgabe nie weiter.
-- **`sbx rm` ist sbx-global benannt:** `--all`, `prune`, `reset` betreffen auch fremde Sandboxes; boxai entfernt immer namentlich.
+- **`sbx secret rm <placeholder>`:** Die positionale Form endet mit Exit 0 und löscht nichts. Nur `--placeholder` wirkt, obwohl die Hilfe es nur im Beispiel zeigt. Ohne den Rollback-Test im E2E wäre das unentdeckt geblieben.
+- **Agent-Start:** `sbx run --name` startet bei `claude` den Prozess `claude --dangerously-skip-permissions`; `sbx exec` startet die Sandbox bei Bedarf mit.
+- **Teil-Maskierung:** `sbx secret ls --json` und `sbx secret rm` zeigen Anfang und Ende eines Werts. Der Adapter liest nur `scope` und `placeholder` und gibt diese Ausgaben nie weiter.
+- **Globale Kommandos:** `sbx rm --all`, `prune` und `reset` betreffen auch fremde Sandboxes; boxai entfernt immer namentlich.
 
 ## Beantwortete offene Punkte
 
@@ -37,7 +39,8 @@ Geprüft am 2026-11-03 auf macOS (arm64) mit **sbx v0.51.0**. Diese Seite hat Vo
 | Git im Worktree in der Sandbox? | `status`, `add` und `commit` funktionieren in zwei Worktrees; die Commits sind auf dem Host sichtbar |
 | Braucht `set-custom --sandbox` eine existierende Sandbox? | Nein |
 | Wert über stdin? | Ja, `--value-stdin` |
-| Sandbox-Secrets löschen? | `sbx rm` löscht sie mit. Einzeln: `sbx secret rm --placeholder <p> --sandbox <n> -f` |
+| Sandbox-Secrets löschen? | `sbx rm` löscht sie mit. Einzeln: `sbx secret rm --placeholder <p> --sandbox <n> --force` |
+| Ersetzt der Proxy den Platzhalter? | Ja, in Request-Headern an die freigegebenen Hosts; per Echo-Dienst mit erfundenem Wert geprüft |
 | Bleiben Worktrees bei `sbx rm`? | Ja, Worktrees und Branches von boxai bleiben unberührt |
 | Copilot-Pfade | `~/.copilot/agents/` (GitHub-Doku), `~/.copilot/skills/` (sbx mountet dort seinen Store) |
 | Antigravity-Pfade | Workspace `.agents/skills/` (Docker-Doku); CLI heißt `agy`, Details in der [Registry](../domain/agent-registry.md) |
