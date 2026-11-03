@@ -1,0 +1,23 @@
+version: 2
+project_name: boxai
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - id: boxai
+    main: ./cmd/boxai
+    binary: boxai
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin]
+    goarch: [amd64, arm64]
+    ldflags:
+      - -s -w
+archives:
+  - formats: [tar.gz]
+    files:
+      - README.md
+checksum:
+  name_template: checksums.txt
+changelog:
+  use: github-native

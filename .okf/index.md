@@ -45,6 +45,7 @@ okf_version: "0.2"
 ## Runbooks
 
 - [Images bauen](runbooks/images-bauen.md)
+- [Release](runbooks/release.md)
 
 ## Erkenntnisse
 

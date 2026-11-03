@@ -2,6 +2,12 @@
 
 ## 2026-11-04
 
+**Phase 10:** README, Beispiele, GoReleaser, Runbooks. `doctor --network` ergänzt. Die Abnahme auf einer frischen Maschine steht aus.
+
+**Phase 9:** Copilot-Mappings und Antigravity-Kit in echten Sandboxes geprüft.
+
+**Phase 8:** Images und Profile; Spring Boot und React bauen in der Sandbox. `boxai rm` entfernt nun auch die Kit-Images.
+
 **Phasen 4 bis 7:** Use Cases `CreateWorkspace` (Rollback, Idempotenz), `RemoveWorkspace`, `lifecycle`; Adapter `statejson`, `configfile`, `assetfs`, `kitfs`, `sbxcli`, `dockerbuild`; CLI vollständig; E2E-Suite gegen echtes sbx. Die Phasen hängen über den Composition Root zusammen und stehen deshalb in einem Commit.
 
 ## 2026-11-03

@@ -1,0 +1,15 @@
+# Fullstack-Workspace mit Kotlin-Backend und React-Frontend.
+# Start: boxai up --config examples/boxai.yaml
+name: shop-feature-x
+agent: claude
+profiles: [kotlin-spring, react]
+branch: feature/x
+base: main
+repos:
+  - path: ../../shop-backend
+  - path: ../../shop-frontend
+    base: develop
+  - url: git@gitlab.com:team/shared-lib.git
+secrets: ./secrets.yaml
+network:
+  allow: ["nexus.firma.de:443"]
