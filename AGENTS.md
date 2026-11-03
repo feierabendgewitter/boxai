@@ -25,7 +25,7 @@ Eine Änderung ist fertig, wenn alle Punkte erfüllt sind:
 - Use Cases: nur gegen die Fakes in `internal/app/port/porttest`.
 - `gitcli`, `fsscan`: gegen echte Repos in `t.TempDir()`.
 - `sbxcli`: mit aufzeichnendem Fake-Runner und Snapshots.
-- `kitfs`, Parser: Golden Files unter `testdata/golden/`; aktualisieren mit `go test ./... -update`.
+- `kitfs`, Parser: Golden Files unter `testdata/golden/` des Pakets; aktualisieren mit `go test ./internal/adapter/out/kitfs -update`.
 - E2E: Build-Tag `e2e`, nur lokal mit `sbx` (`make e2e`).
 
 ## Arbeiten mit echtem sbx

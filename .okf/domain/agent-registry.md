@@ -31,4 +31,6 @@ Von sbx verwaltet und nie beschrieben: `~/.claude.json`, `~/.claude/settings.jso
 
 # Antigravity
 
-Antigravity ist kein Built-in-Agent und läuft über den eigenen Kit in `kits/antigravity`. Es ist als experimentell gekennzeichnet. Die CLI heißt `agy`; die Installation folgt [der offiziellen Anleitung](https://antigravity.google/docs/install?tab=cli).
+Antigravity ist kein Built-in-Agent und läuft über den eigenen v3-Workload in `kits/antigravity`, den `kits/embed.go` ins Binary einbettet. Es ist als experimentell gekennzeichnet. Die CLI heißt `agy`; Details zur Anmeldung stehen in den [Erkenntnissen](../findings/sbx-verhalten.md).
+
+Der Workload bringt sein Image selbst mit. Ein Profil-Image würde `agy` ersetzen, deshalb fehlen dort die Tools der Profile; Netzwerk und Konfiguration der Profile gelten weiterhin.

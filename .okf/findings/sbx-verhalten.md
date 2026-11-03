@@ -27,6 +27,7 @@ Geprüft am 2026-11-03 auf macOS (arm64) mit **sbx v0.51.0**. Diese Seite hat Vo
 - **Fehlerdetails:** Kit-Fehler stehen nur in `~/Library/Application Support/com.docker.sandboxes/sandboxes/sandboxd/daemon.log`.
 - **Hänger:** sbx 0.46.0 hing hier bei jedem Aufruf in `_dyld_start`, ohne Ausgabe; das Update auf 0.51.0 behob es. Die Ursache wurde nicht geklärt. `execx` setzt deshalb Zeitlimits, und `doctor` meldet ein antwortloses Binary.
 - **`sbx secret rm <placeholder>`:** Die positionale Form endet mit Exit 0 und löscht nichts. Nur `--placeholder` wirkt, obwohl die Hilfe es nur im Beispiel zeigt. Ohne den Rollback-Test im E2E wäre das unentdeckt geblieben.
+- **Kit-Images bleiben liegen:** Jeder lokale Mixin erzeugt `sbx-kit-src:<kit>-<hash>`, das `sbx rm` stehen lässt. `sbxcli.Remove` entfernt es; `sandbox-kit-assembled` ist der Cache von sbx und bleibt.
 - **Agent-Start:** `sbx run --name` startet bei `claude` den Prozess `claude --dangerously-skip-permissions`; `sbx exec` startet die Sandbox bei Bedarf mit.
 - **Teil-Maskierung:** `sbx secret ls --json` und `sbx secret rm` zeigen Anfang und Ende eines Werts. Der Adapter liest nur `scope` und `placeholder` und gibt diese Ausgaben nie weiter.
 - **Globale Kommandos:** `sbx rm --all`, `prune` und `reset` betreffen auch fremde Sandboxes; boxai entfernt immer namentlich.
@@ -57,7 +58,19 @@ Geprüft am 2026-11-03 auf macOS (arm64) mit **sbx v0.51.0**. Diese Seite hat Vo
 
 Eigene Images über `sbx create -t <tag> --pull never` funktionieren zusammen mit `claude` und einem v3-Mixin.
 
+## Agents in der Sandbox
+
+| Agent | Geprüft |
+| --- | --- |
+| Claude Code | `sbx run --name` startet `claude --dangerously-skip-permissions`; Kit-Dateien liegen unter `~/.claude/` |
+| Copilot CLI 1.0.105 | Startet `copilot --yolo`; `copilot skill list` führt die Skills aus `~/.copilot/skills/` als Personal skills |
+| Antigravity (`agy` 1.4.12) | Lokaler v3-Workload startet `agy`; Skills und `AGENTS.md` liegen im Workspace; Git funktioniert |
+
+Das Bauen des Antigravity-Kits legte keinen dauerhaften `sbx-kit-builder` an. Es hinterlässt `sbx-kit-src:antigravity-<hash>`, das alle Antigravity-Workspaces teilen und das deshalb beim `rm` bleibt.
+
 ## Nicht verifiziert
+
+- Modell-Aufrufe der Agents: Getestet wurde bis zum Start, ohne Anmeldung und ohne Kontingent zu verbrauchen. Antigravity braucht für den Betrieb ohne Browser laut Google `GEMINI_API_KEY` und `"modelProvider": "gemini"` in `~/.gemini/antigravity-cli/settings.json`. Die Netzwerk-Freigaben des Kits sind deshalb eine Annahme.
 
 - Ein Maven-Zugriff gegen ein privates Repo mit echtem Token: kein solches Repo verfügbar.
 - AWS-SigV4 mit Platzhaltern: laut Mechanik zum Scheitern verurteilt, weil die Signatur lokal entsteht; `secrets.mode: env` ist der Ausweg.

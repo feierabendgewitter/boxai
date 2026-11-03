@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/feierabendgewitter/boxai/internal/adapter/out/execx"
@@ -13,7 +14,12 @@ import (
 	"github.com/feierabendgewitter/boxai/internal/domain/profile"
 	"github.com/feierabendgewitter/boxai/internal/domain/sandbox"
 	"github.com/feierabendgewitter/boxai/internal/domain/secret"
+	"github.com/feierabendgewitter/boxai/internal/domain/workspace"
 )
+
+const kitSourceRepo = "docker.io/library/sbx-kit-src"
+
+var kitHash = regexp.MustCompile(`^[0-9a-f]{12}$`)
 
 // CLI implementiert beide Ports.
 type CLI struct {
@@ -76,7 +82,46 @@ func (c *CLI) Stop(ctx context.Context, name string) error {
 // und `boxai rm` wiederholbar bleiben.
 func (c *CLI) Remove(ctx context.Context, name string) error {
 	_, err := c.runner.Run(ctx, execx.Cmd{Name: "sbx", Args: []string{"rm", "--force", name}})
-	return ignoreNotFound(err)
+	if err := ignoreNotFound(err); err != nil {
+		return err
+	}
+	return c.removeKitImages(ctx, name)
+}
+
+// removeKitImages entfernt die Images, die sbx pro Mixin als `sbx-kit-src:<kit>-<hash>`
+// anlegt und bei `sbx rm` stehen lässt. Der Kit heißt wie die Sandbox; der genaue Hash-Vergleich
+// schützt boxai-foo-bar davor, beim Entfernen von boxai-foo mitzugehen.
+func (c *CLI) removeKitImages(ctx context.Context, name string) error {
+	res, err := c.runner.Run(ctx, execx.Cmd{Name: "sbx", Args: []string{"template", "ls"}, ReadOnly: true})
+	if err != nil {
+		return err
+	}
+	for line := range strings.SplitSeq(res.Stdout, "\n") {
+		fields := strings.Fields(line)
+		if len(fields) < 2 {
+			continue
+		}
+		kitImage := fields[0] == kitSourceRepo && isKitTag(fields[1], name)
+		// `boxai up --dockerfile` legt das Image pro Workspace an; es gehört zum Workspace.
+		customImage := fields[0] == customRepo(name)
+		if !kitImage && !customImage {
+			continue
+		}
+		ref := fields[0] + ":" + fields[1]
+		if _, err := c.runner.Run(ctx, execx.Cmd{Name: "sbx", Args: []string{"template", "rm", "--force", ref}}); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func customRepo(sandboxName string) string {
+	return "docker.io/library/boxai-custom-" + strings.TrimPrefix(sandboxName, workspace.SandboxPrefix)
+}
+
+func isKitTag(tag, kit string) bool {
+	hash, ok := strings.CutPrefix(tag, kit+"-")
+	return ok && kitHash.MatchString(hash)
 }
 
 func ignoreNotFound(err error) error {

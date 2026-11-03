@@ -95,7 +95,36 @@ func TestStopAndRemove(t *testing.T) {
 	if err := c.Remove(ctx, "boxai-x"); err != nil {
 		t.Fatal(err)
 	}
-	assertLines(t, rec, "sbx stop boxai-x", "sbx rm --force boxai-x")
+	assertLines(t, rec, "sbx stop boxai-x", "sbx rm --force boxai-x", "sbx template ls")
+}
+
+func TestRemoveDeletesOnlyOwnKitImages(t *testing.T) {
+	rec := &execxtest.Recorder{Responses: map[string]execxtest.Response{"sbx template ls": {Stdout: `REPOSITORY  TAG  IMAGE ID  FLAVOR  CREATED
+docker.io/library/sbx-kit-src  boxai-foo-0eaab94f583d  7253033da215    2m
+docker.io/library/sbx-kit-src  boxai-foo-bar-6be4d2d3bd00  9a8354d6abd8    4m
+docker.io/library/sbx-kit-src  fremd-e6520cf8e5df  08497a57dac6    5m
+docker.io/library/boxai-foo  0eaab94f583d  017481601084  claude  1m
+docker.io/library/boxai-custom-foo  latest  017481601085  claude  1m
+docker.io/library/boxai-custom-foo-bar  latest  017481601086  claude  1m
+`}}}
+	if err := New(rec).Remove(context.Background(), "boxai-foo"); err != nil {
+		t.Fatal(err)
+	}
+	assertLines(t, rec,
+		"sbx rm --force boxai-foo",
+		"sbx template ls",
+		"sbx template rm --force docker.io/library/sbx-kit-src:boxai-foo-0eaab94f583d",
+		"sbx template rm --force docker.io/library/boxai-custom-foo:latest",
+	)
+	boom := errors.New("boom")
+	rec.Responses["sbx template rm"] = execxtest.Response{Err: boom}
+	if err := New(rec).Remove(context.Background(), "boxai-foo"); !errors.Is(err, boom) {
+		t.Fatal(err)
+	}
+	rec.Responses["sbx template ls"] = execxtest.Response{Err: boom}
+	if err := New(rec).Remove(context.Background(), "boxai-foo"); !errors.Is(err, boom) {
+		t.Fatal(err)
+	}
 }
 
 func TestRemoveMissingSandboxIsFine(t *testing.T) {
