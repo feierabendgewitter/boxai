@@ -4,15 +4,48 @@ package archtest
 import (
 	"bufio"
 	"bytes"
+	"io/fs"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"testing"
 )
 
 const module = "github.com/feierabendgewitter/boxai"
 
+// touchSources liest alle Quelldateien des Kerns. Der Test-Cache von Go kennt nur
+// Dateien, die der Test selbst öffnet; ohne das bliebe ein neuer Verstoß, den nur
+// `go list` sieht, hinter einem gecachten `ok` verborgen.
+func touchSources(t *testing.T) {
+	t.Helper()
+	for _, dir := range []string{"../domain", "../app"} {
+		err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
+			if err != nil || d.IsDir() || !strings.HasSuffix(path, ".go") {
+				return err
+			}
+			_, err = os.ReadFile(path)
+			return err
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		// Neue Dateien ändern die Verzeichnisliste; auch sie muss der Cache sehen.
+		if err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
+			if err != nil || !d.IsDir() {
+				return err
+			}
+			_, err = os.ReadDir(path)
+			return err
+		}); err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
 func goList(t *testing.T, args ...string) []string {
 	t.Helper()
+	touchSources(t)
 	out, err := exec.Command("go", append([]string{"list"}, args...)...).CombinedOutput()
 	if err != nil {
 		t.Fatalf("go list %v: %v\n%s", args, err, out)

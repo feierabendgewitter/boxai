@@ -14,7 +14,10 @@ okf_version: "0.2"
 ## Architektur
 
 - [Hexagonale Architektur](architecture/hexagonal.md): Schichten und Abhängigkeitsregel.
+- [Ports](architecture/ports.md): alle Ports mit Verantwortung.
 - [execx](architecture/adapters/execx.md): Subprozess-Runner mit Dry-Run und Redaction.
+- [gitcli](architecture/adapters/gitcli.md): Git-Operationen über das Binary.
+- [fsscan](architecture/adapters/fsscan.md): findet Repos im Dateisystem.
 - [kitfs](architecture/adapters/kitfs.md): schreibt den v3-Mixin.
 
 ## Domäne

@@ -22,6 +22,7 @@ type Runtime struct {
 // Services sind die Inbound-Ports, die das CLI aufruft.
 type Services struct {
 	Doctor port.Doctor
+	Scan   port.RepoScan
 }
 
 // Factory baut die Services zur Laufzeit, sobald die Flags bekannt sind.
@@ -62,6 +63,6 @@ func newRoot(factory Factory) *cobra.Command {
 	root.PersistentFlags().BoolVar(&rt.DryRun, "dry-run", false, "geplante git- und sbx-Kommandos nur anzeigen")
 	root.PersistentFlags().BoolVar(&rt.Verbose, "verbose", false, "strukturierte Logs ausgeben")
 	services := func() Services { return factory(rt) }
-	root.AddCommand(newDoctorCmd(services))
+	root.AddCommand(newDoctorCmd(services), newScanCmd(services))
 	return root
 }

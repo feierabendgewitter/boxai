@@ -11,8 +11,11 @@ import (
 
 	"github.com/feierabendgewitter/boxai/internal/adapter/in/cli"
 	"github.com/feierabendgewitter/boxai/internal/adapter/out/execx"
+	"github.com/feierabendgewitter/boxai/internal/adapter/out/fsscan"
+	"github.com/feierabendgewitter/boxai/internal/adapter/out/gitcli"
 	"github.com/feierabendgewitter/boxai/internal/adapter/out/hostprobe"
 	"github.com/feierabendgewitter/boxai/internal/app/doctor"
+	"github.com/feierabendgewitter/boxai/internal/app/scanrepos"
 )
 
 func main() {
@@ -31,5 +34,6 @@ func build(rt cli.Runtime) cli.Services {
 	runner := &execx.Exec{DryRun: rt.DryRun, Log: log, PlanOut: os.Stdout}
 	return cli.Services{
 		Doctor: doctor.New(hostprobe.New(runner, exec.LookPath)),
+		Scan:   scanrepos.New(fsscan.New(), gitcli.New(runner)),
 	}
 }
