@@ -6,21 +6,6 @@ capabilities:
   - type: com.docker.sandbox/lifecycle@1
     config:
       files:
-        - path: /home/agent/.claude/agents/reviewer.md
-          content: |
-            # Reviewer
-          mode: "0644"
-        - path: /home/agent/.claude/commands/reviewer.md
-          content: |
-            # Reviewer
-          mode: "0644"
-        - path: /home/agent/.claude/skills/lint/SKILL.md
-          content: |
-            ---
-            name: lint
-            ---
-            Regeln
-          mode: "0644"
         - path: /home/agent/.npmrc
           content: |
             //registry.npmjs.org/:_authToken=${NPM_TOKEN}

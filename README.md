@@ -46,6 +46,7 @@ boxai up --dry-run ...            # zeigt alle git- und sbx-Kommandos
 | `boxai rm <name>` | Sandbox, Worktrees, Kit und State entfernen; Branches bleiben ohne `--delete-branches` |
 | `boxai doctor` | Voraussetzungen prüfen |
 | `boxai init` | `boxai.yaml` und `secrets.example.yaml` schreiben |
+| `boxai agent-help` | Anleitung für KI-Agenten ausgeben, die boxai bedienen |
 
 ## Wichtig zu wissen
 
@@ -53,4 +54,4 @@ Der Agent kann über den Mount von `<repo>/.git` Objekte und Branches deiner Hau
 
 ## Dokumentation
 
-Das Projektwissen liegt als OKF-Bundle in [`.okf/`](.okf/index.md); Einstieg für Agents ist [`AGENTS.md`](AGENTS.md).
+Das Projektwissen liegt als OKF-Bundle in [`.okf/`](.okf/index.md). Agents, die an boxai entwickeln, starten bei [`AGENTS.md`](AGENTS.md); Agents, die boxai bedienen, bei `boxai agent-help`.

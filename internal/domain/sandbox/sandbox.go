@@ -58,10 +58,15 @@ type KitSpec struct {
 	Name        string
 	Description string
 	Files       []KitFile
+	// RootDir ist der Workspace-Ordner auf dem Host (in der Sandbox unter demselben Pfad).
+	RootDir string
+	// RootFiles liegen direkt im Workspace-Ordner statt im Deskriptor, weil sbx den
+	// Deskriptor auf 512 KiB begrenzt. Path ist relativ zu RootDir.
+	RootFiles []KitFile
 }
 
 // Empty meldet, ob der Kit nichts beitragen würde.
-func (k KitSpec) Empty() bool { return len(k.Files) == 0 }
+func (k KitSpec) Empty() bool { return len(k.Files) == 0 && len(k.RootFiles) == 0 }
 
 // KitInput enthält alle Bausteine für BuildKit.
 type KitInput struct {
@@ -84,6 +89,7 @@ func BuildKit(in KitInput) (KitSpec, []string, error) {
 	kit := KitSpec{
 		Name:        workspace.SandboxName(in.Workspace.Name),
 		Description: "boxai-Workspace " + in.Workspace.Name,
+		RootDir:     in.Workspace.Path,
 	}
 	var notes []string
 	index := map[string]bool{}
@@ -101,11 +107,16 @@ func BuildKit(in KitInput) (KitSpec, []string, error) {
 		add(KitFile{Path: path.Join(in.Workspace.Path, c.Name), Content: c.Content, Mode: 0o644})
 	}
 	for _, a := range in.Assets {
-		base := HomeDir
 		if a.Scope == agent.Workspace {
-			base = in.Workspace.Path
+			abs := path.Join(in.Workspace.Path, a.Path)
+			if add(KitFile{Path: abs, Content: a.Content, Mode: normalizeMode(a.Mode)}) {
+				// Nicht in den Deskriptor, sondern direkt in den gemounteten Workspace.
+				kit.Files = kit.Files[:len(kit.Files)-1]
+				kit.RootFiles = append(kit.RootFiles, KitFile{Path: a.Path, Content: a.Content, Mode: normalizeMode(a.Mode)})
+			}
+			continue
 		}
-		add(KitFile{Path: path.Join(base, a.Path), Content: a.Content, Mode: normalizeMode(a.Mode)})
+		add(KitFile{Path: path.Join(HomeDir, a.Path), Content: a.Content, Mode: normalizeMode(a.Mode)})
 	}
 	for _, f := range in.Config {
 		if in.Agent.IsReserved(f.Path) {
@@ -114,6 +125,7 @@ func BuildKit(in KitInput) (KitSpec, []string, error) {
 		add(KitFile{Path: path.Join(HomeDir, f.Path), Content: f.Content, Mode: normalizeMode(f.Mode)})
 	}
 	slices.SortFunc(kit.Files, func(a, b KitFile) int { return strings.Compare(a.Path, b.Path) })
+	slices.SortFunc(kit.RootFiles, func(a, b KitFile) int { return strings.Compare(a.Path, b.Path) })
 	return kit, notes, nil
 }
 

@@ -1,5 +1,9 @@
 # Änderungshistorie
 
+## 2026-11-06
+
+`boxai agent-help` ergänzt: gibt eine eingebettete Anleitung für bedienende KI-Agenten und eine aus dem Kommandobaum generierte Referenz aus.
+
 ## 2026-11-04
 
 **Phase 10:** README, Beispiele, GoReleaser, Runbooks. `doctor --network` ergänzt. Die Abnahme auf einer frischen Maschine steht aus.

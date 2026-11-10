@@ -188,6 +188,33 @@ func TestWriteReplacesAndValidates(t *testing.T) {
 	}
 }
 
+func TestWriteRootFilesReplacesStaleAssets(t *testing.T) {
+	root := t.TempDir()
+	stale := filepath.Join(root, ".claude", "agents", "alt.md")
+	if err := os.MkdirAll(filepath.Dir(stale), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(stale, []byte("alt"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	w := New(&execxtest.Recorder{}, nil, "", false)
+	kit := sandbox.KitSpec{
+		Name:      "boxai-shop",
+		RootDir:   root,
+		RootFiles: []sandbox.KitFile{{Path: ".claude/skills/lint/SKILL.md", Content: "regeln", Mode: 0o644}},
+	}
+	if err := w.Write(context.Background(), kit, filepath.Join(t.TempDir(), "kit")); err != nil {
+		t.Fatal(err)
+	}
+	got, err := os.ReadFile(filepath.Join(root, ".claude", "skills", "lint", "SKILL.md"))
+	if err != nil || string(got) != "regeln" {
+		t.Fatal(string(got), err)
+	}
+	if _, err := os.Stat(stale); !os.IsNotExist(err) {
+		t.Fatal("alter Stand blieb liegen")
+	}
+}
+
 func TestDryRunTouchesNothing(t *testing.T) {
 	parent := t.TempDir()
 	dir := filepath.Join(parent, "kit")

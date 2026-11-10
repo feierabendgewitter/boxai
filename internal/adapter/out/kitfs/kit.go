@@ -21,7 +21,7 @@ import (
 const syntaxLine = "# syntax=docker/sandbox-kit:3\n"
 
 // generatedRootEntries sind die Einträge, die boxai im Workspace-Root erzeugt.
-var generatedRootEntries = []string{"AGENTS.md", "CLAUDE.md", ".agents"}
+var generatedRootEntries = []string{"AGENTS.md", "CLAUDE.md", ".agents", ".claude"}
 
 // Writer implementiert port.KitWriter.
 type Writer struct {
@@ -96,7 +96,36 @@ func (w *Writer) Write(_ context.Context, kit sandbox.KitSpec, dir string) error
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join(dir, kit.Name+".yaml"), data, 0o600)
+	if err := os.WriteFile(filepath.Join(dir, kit.Name+".yaml"), data, 0o600); err != nil {
+		return err
+	}
+	return writeRootFiles(kit)
+}
+
+// writeRootFiles legt Workspace-Assets direkt im Workspace-Ordner ab. Der Ordner wird
+// von boxai verwaltet; Reste eines früheren Laufs werden vorher entfernt.
+func writeRootFiles(kit sandbox.KitSpec) error {
+	if len(kit.RootFiles) == 0 {
+		return nil
+	}
+	if kit.RootDir == "" {
+		return errors.New("workspace-ordner für Workspace-Assets fehlt")
+	}
+	for _, name := range []string{".agents", ".claude"} {
+		if err := os.RemoveAll(filepath.Join(kit.RootDir, name)); err != nil {
+			return err
+		}
+	}
+	for _, f := range kit.RootFiles {
+		target := filepath.Join(kit.RootDir, filepath.FromSlash(path.Clean(f.Path)))
+		if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
+			return err
+		}
+		if err := os.WriteFile(target, []byte(f.Content), fs.FileMode(f.Mode)); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Validate implementiert port.KitWriter. `--offline` lehnt v3-Quell-Kits ab, deshalb

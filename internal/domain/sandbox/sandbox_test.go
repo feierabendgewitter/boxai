@@ -25,7 +25,7 @@ func TestBuildKitPlacesFiles(t *testing.T) {
 		Workspace: ws,
 		Agent:     definition(t, agent.Claude),
 		Assets: []agent.PlacedFile{
-			{Path: ".claude/agents/a.md", Content: "a", Mode: 0o600},
+			{Scope: agent.Home, Path: ".claude/agents/a.md", Content: "a", Mode: 0o600},
 			{Scope: agent.Workspace, Path: ".agents/skills/x/SKILL.md", Content: "x"},
 		},
 		Config:  []profile.ConfigFile{{Path: ".npmrc", Content: "n", Mode: 0o600}},
@@ -38,10 +38,9 @@ func TestBuildKitPlacesFiles(t *testing.T) {
 		t.Fatalf("%+v", kit)
 	}
 	want := map[string]uint32{
-		"/home/agent/.claude/agents/a.md":    0o600,
-		"/ws/shop/.agents/skills/x/SKILL.md": 0o644,
-		"/home/agent/.npmrc":                 0o600,
-		"/ws/shop/AGENTS.md":                 0o644,
+		"/home/agent/.claude/agents/a.md": 0o600,
+		"/home/agent/.npmrc":              0o600,
+		"/ws/shop/AGENTS.md":              0o644,
 	}
 	if len(kit.Files) != len(want) {
 		t.Fatalf("%+v", kit.Files)
@@ -50,6 +49,11 @@ func TestBuildKitPlacesFiles(t *testing.T) {
 		if mode, ok := want[f.Path]; !ok || mode != f.Mode {
 			t.Errorf("%s mode %o", f.Path, f.Mode)
 		}
+	}
+	// Workspace-Assets bleiben aus dem Deskriptor (512-KiB-Limit) und liegen im Root.
+	if kit.RootDir != "/ws/shop" || len(kit.RootFiles) != 1 ||
+		kit.RootFiles[0].Path != ".agents/skills/x/SKILL.md" || kit.RootFiles[0].Mode != 0o644 {
+		t.Fatalf("%+v", kit.RootFiles)
 	}
 }
 

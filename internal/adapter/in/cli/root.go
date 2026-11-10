@@ -83,6 +83,7 @@ func newRoot(stdin io.Reader, stderr io.Writer, factory Factory) *cobra.Command 
 		newRmCmd(services),
 		newDoctorCmd(services),
 		newInitCmd(),
+		newAgentHelpCmd(root),
 	)
 	return root
 }

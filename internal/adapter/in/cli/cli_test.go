@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -176,6 +177,33 @@ func TestInitWritesExamplesWithoutOverwriting(t *testing.T) {
 	}
 	if code, _, _ := run(t, Services{}, "init", "--dir", filepath.Join(dir, "fehlt")); code != 1 {
 		t.Fatal("fehlendes Ziel akzeptiert")
+	}
+}
+
+func TestAgentHelpExplainsUsageAndListsEveryCommandAndFlag(t *testing.T) {
+	code, out, _ := run(t, Services{}, "agent-help")
+	if code != 0 {
+		t.Fatal(code)
+	}
+	for _, want := range []string{"--no-attach", "Exit-Code", "## Kommandoreferenz", "--dry-run", "--verbose"} {
+		if !strings.Contains(out, want) {
+			t.Errorf("%q fehlt", want)
+		}
+	}
+	root := newRoot(strings.NewReader(""), io.Discard, nil)
+	for _, c := range root.Commands() {
+		if c.Name() == "agent-help" {
+			continue
+		}
+		if !strings.Contains(out, "`"+c.UseLine()+"`") {
+			t.Errorf("Kommando %q fehlt", c.Name())
+		}
+		if !strings.Contains(out, c.LocalNonPersistentFlags().FlagUsages()) {
+			t.Errorf("Flags von %q fehlen", c.Name())
+		}
+	}
+	if strings.Contains(out, "completion") {
+		t.Error("completion gehört nicht in die Referenz")
 	}
 }
 

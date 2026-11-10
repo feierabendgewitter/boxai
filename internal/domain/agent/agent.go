@@ -76,9 +76,9 @@ func NewRegistry() *Registry {
 			WritesClaudeMD: true,
 			Reserved:       []string{".claude.json", ".claude/settings.json", ".claude/.config.json"},
 			Mappings: []AssetMapping{
-				{Source: ".claude/agents", Kind: MarkdownFiles, Target: ".claude/agents"},
-				{Source: ".claude/skills", Kind: Directories, Target: ".claude/skills"},
-				{Source: ".claude/commands", Kind: MarkdownFiles, Target: ".claude/commands"},
+				{Source: ".claude/agents", Kind: MarkdownFiles, Target: ".claude/agents", Scope: Workspace},
+				{Source: ".claude/skills", Kind: Directories, Target: ".claude/skills", Scope: Workspace},
+				{Source: ".claude/commands", Kind: MarkdownFiles, Target: ".claude/commands", Scope: Workspace},
 			},
 		},
 		Copilot: {
