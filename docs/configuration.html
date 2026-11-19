@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Konfiguration · boxai</title>
+<meta name="description" content="boxai.yaml: Repos, Agent, Profile, Secrets und Netzwerkfreigaben.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+<a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><use href="favicon.svg#i"/></svg>boxai</a>
+<nav><a href="index.html">Start</a><a href="installation.html">Installation</a><a href="getting-started.html">Erste Schritte</a><a href="configuration.html" aria-current="page">Konfiguration</a><a href="commands.html">Kommandos</a><a href="security.html">Sicherheit</a><a class="gh" href="https://github.com/feierabendgewitter/boxai">GitHub</a></nav>
+</div></header>
+<main class="wrap doc"><h1>Konfiguration</h1><p class="lead">Alles in einer <code>boxai.yaml</code>.</p>
+<h2>Beispiel</h2>
+<p>Ein Fullstack-Workspace mit Kotlin-Backend und React-Frontend:</p>
+<pre><code># Fullstack-Workspace mit Kotlin-Backend und React-Frontend.
+# Start: boxai up --config examples/boxai.yaml
+name: shop-feature-x
+agent: claude
+profiles: [kotlin-spring, react]
+branch: feature/x
+base: main
+repos:
+  - path: ../../shop-backend
+  - path: ../../shop-frontend
+    base: develop
+  - url: git@gitlab.com:team/shared-lib.git
+secrets: ./secrets.yaml
+network:
+  allow: [&quot;nexus.firma.de:443&quot;]</code></pre>
+<p>Start mit <code>boxai up --config examples/boxai.yaml</code>.</p>
+<h2>Felder</h2>
+<table>
+<tr><th>Feld</th><th>Bedeutung</th></tr>
+<tr><td><code>name</code></td><td>Name des Workspaces und der Sandbox</td></tr>
+<tr><td><code>agent</code></td><td><code>claude</code>, <code>copilot</code> oder (experimentell) <code>antigravity</code></td></tr>
+<tr><td><code>profiles</code></td><td>Stack-Profile, kombinierbar: <code>kotlin-spring</code>, <code>react</code></td></tr>
+<tr><td><code>branch</code> / <code>base</code></td><td>Feature-Branch der Worktrees und der Ausgangsbranch; <code>base</code> lässt sich pro Repo überschreiben</td></tr>
+<tr><td><code>repos</code></td><td>Lokale Repos per <code>path</code> oder Remote-Repos per <code>url</code></td></tr>
+<tr><td><code>secrets</code></td><td>Pfad zu einer Secret-Datei</td></tr>
+<tr><td><code>network.allow</code></td><td>Zusätzliche Host-Freigaben der Sandbox</td></tr>
+</table>
+<h2>Stack-Profile</h2>
+<p>Profile liefern Image-Wahl und Konfigurationsdateien. Zusätzlich erlaubt jede Sandbox <code>github.com</code>, <code>api.github.com</code>, <code>gitlab.com</code> und <code>**.amazonaws.com</code>.</p>
+<h2>Secrets</h2>
+<p>Die Secret-Datei verweist auf Quellen, nie auf eingebettete Werte. Referenzen in YAML sind <code>${env:NAME}</code> und <code>${file:pfad}</code>. Vorlage: <code>boxai init</code> erzeugt <code>secrets.example.yaml</code>.</p>
+<p>Die Sandbox sieht nur einen Platzhalter, den der sbx-Proxy in Requests an die erlaubten <code>hosts</code> ersetzt. Deshalb sind <code>hosts</code> Pflicht, und boxai gibt jeden Secret-Host auch im Netzwerk frei.</p>
+<h3>Fallback <code>secrets.mode: env</code></h3>
+<p>Für Tools, bei denen Platzhalter scheitern (etwa AWS-SigV4), übergibt boxai die echten Werte per Umgebungsvariable. Die Sandbox sieht dann den Klartext, und boxai warnt entsprechend.</p>
+</main>
+<footer><div class="wrap">boxai · <a href="https://github.com/feierabendgewitter/boxai">Quellcode auf GitHub</a> · Ein Agent, mehrere Repos, sicher in einer Sandbox.</div></footer>
+</body>
+</html>

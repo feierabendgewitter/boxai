@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installation · boxai</title>
+<meta name="description" content="boxai installieren: Voraussetzungen, sbx, go install, Releases.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+<a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><use href="favicon.svg#i"/></svg>boxai</a>
+<nav><a href="index.html">Start</a><a href="installation.html" aria-current="page">Installation</a><a href="getting-started.html">Erste Schritte</a><a href="configuration.html">Konfiguration</a><a href="commands.html">Kommandos</a><a href="security.html">Sicherheit</a><a class="gh" href="https://github.com/feierabendgewitter/boxai">GitHub</a></nav>
+</div></header>
+<main class="wrap doc"><h1>Installation</h1><p class="lead">Ein Binary, ein paar Voraussetzungen.</p>
+<h2>Voraussetzungen</h2>
+<ul>
+<li>macOS oder Linux, jeweils mit <code>git</code></li>
+<li><code>sbx</code> ab Version 0.51</li>
+<li>Docker, nur für <code>make images</code> und <code>--dockerfile</code></li>
+</ul>
+<h2>1. sbx installieren</h2>
+<pre><code>brew install docker/tap/sbx
+sbx login</code></pre>
+<p>Mehr dazu in der <a href="https://docs.docker.com/ai/sandboxes/">Docker-Sandboxes-Dokumentation</a>.</p>
+<h2>2. boxai installieren</h2>
+<h3>Mit Go</h3>
+<pre><code>go install github.com/feierabendgewitter/boxai/cmd/boxai@latest</code></pre>
+<h3>Aus einem Release</h3>
+<p>Fertige Binaries gibt es unter <a href="https://github.com/feierabendgewitter/boxai/releases">Releases</a>. Entpacken und in den <code>PATH</code> legen.</p>
+<h3>Aus dem Quellcode</h3>
+<pre><code>git clone https://github.com/feierabendgewitter/boxai.git
+cd boxai
+make build        # erzeugt bin/boxai</code></pre>
+<h2>3. Installation prüfen</h2>
+<pre><code>boxai doctor</code></pre>
+<p><code>boxai doctor</code> prüft die Voraussetzungen. Mit <code>--network</code> vergleicht es zusätzlich die Freigaben deiner Profile mit der sbx-Policy.</p>
+<h2>Images (optional)</h2>
+<p>Ohne eigene Images startet der Agent mit seinem Standard-Image, und boxai weist darauf hin, welche Tools dort fehlen. Die Images mit den Profilen baust du aus dem Repository:</p>
+<pre><code>make images</code></pre>
+<p class="next"><a href="getting-started.html">Weiter: Erste Schritte →</a></p>
+</main>
+<footer><div class="wrap">boxai · <a href="https://github.com/feierabendgewitter/boxai">Quellcode auf GitHub</a> · Ein Agent, mehrere Repos, sicher in einer Sandbox.</div></footer>
+</body>
+</html>

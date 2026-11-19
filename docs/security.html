@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sicherheit · boxai</title>
+<meta name="description" content="Isolation, Secret-Modell und Grenzen von boxai.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+<a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><use href="favicon.svg#i"/></svg>boxai</a>
+<nav><a href="index.html">Start</a><a href="installation.html">Installation</a><a href="getting-started.html">Erste Schritte</a><a href="configuration.html">Konfiguration</a><a href="commands.html">Kommandos</a><a href="security.html" aria-current="page">Sicherheit</a><a class="gh" href="https://github.com/feierabendgewitter/boxai">GitHub</a></nav>
+</div></header>
+<main class="wrap doc"><h1>Sicherheit</h1><p class="lead">Was boxai schützt und wo die Grenzen liegen.</p>
+<h2>Isolation</h2>
+<p>Der Agent läuft in einer Docker Sandbox und hat nur Zugriff auf die gemounteten Worktrees und freigegebene Hosts. Netzwerkregeln und Secrets werden pro Sandbox gesetzt, die globale Policy bleibt unverändert.</p>
+<h2>Secrets</h2>
+<ul>
+<li>Die Sandbox sieht nur Platzhalter, der sbx-Proxy ersetzt sie in Request-Headern an erlaubte Hosts.</li>
+<li>Secret-Werte erscheinen nie in Logs, State-Dateien, Kits oder Kommandozeilen. Sie gehen per Stdin an sbx und werden in Ausgaben maskiert.</li>
+<li>Ausnahme: <code>secrets.mode: env</code> reicht Klartext in die Sandbox und warnt dabei.</li>
+</ul>
+<h2>Grenzen</h2>
+<div class="note"><b>Wichtig:</b> Der Agent kann über den Mount von <code>&lt;repo&gt;/.git</code> Objekte und Branches deiner Haupt-Repos verändern. Das ist nötig, damit Worktrees in der Sandbox funktionieren. Sichere wichtige Branches und prüfe Ergebnisse, bevor du sie pushst.</div>
+<p><code>boxai rm</code> entfernt Branches nur mit <code>--delete-branches</code>.</p>
+</main>
+<footer><div class="wrap">boxai · <a href="https://github.com/feierabendgewitter/boxai">Quellcode auf GitHub</a> · Ein Agent, mehrere Repos, sicher in einer Sandbox.</div></footer>
+</body>
+</html>

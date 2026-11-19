@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>boxai</title>
+<meta name="description" content="boxai bündelt mehrere Git-Repos als Worktrees und startet sie in einer Docker Sandbox mit Claude Code, Copilot CLI oder Antigravity.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+<a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><use href="favicon.svg#i"/></svg>boxai</a>
+<nav><a href="index.html" aria-current="page">Start</a><a href="installation.html">Installation</a><a href="getting-started.html">Erste Schritte</a><a href="configuration.html">Konfiguration</a><a href="commands.html">Kommandos</a><a href="security.html">Sicherheit</a><a class="gh" href="https://github.com/feierabendgewitter/boxai">GitHub</a></nav>
+</div></header>
+
+<section class="hero"><div class="wrap">
+<p class="eyebrow">Docker Sandbox · Git Worktrees · KI-Agenten</p>
+<h1>Ein Agent. Mehrere Repos.<br><span class="accent">Vom Host isoliert.</span></h1>
+<p class="lead">boxai bündelt mehrere Git-Repos als Worktrees zu einem Workspace und startet ihn in einer Docker Sandbox mit Claude Code, GitHub Copilot CLI oder Google Antigravity.</p>
+<div class="cta"><a class="btn primary" href="getting-started.html">Erste Schritte</a><a class="btn" href="installation.html">Installation</a></div>
+<div class="term" aria-label="Beispielsitzung"><pre><code><span class="c">$</span> cd ~/projekte
+<span class="c">$</span> boxai up --name shop --repo backend --repo frontend \
+      --agent claude --profile kotlin-spring,react
+<span class="ok">✓</span> Worktrees angelegt   <span class="d">backend, frontend @ feature/x</span>
+<span class="ok">✓</span> Kit erzeugt          <span class="d">Agent- und Skill-Dateien aus den Repos</span>
+<span class="ok">✓</span> Sandbox gestartet    <span class="d">boxai-shop · claude</span></code></pre></div>
+</div></section>
+
+<section class="wrap feat">
+<h2>Was boxai kann</h2>
+<div class="grid">
+<article><h3>Repo-übergreifend arbeiten</h3><p>Backend, Frontend und geteilte Bibliotheken liegen als Worktrees nebeneinander im selben Workspace. Der Agent sieht den ganzen Zusammenhang, deine Checkouts bleiben unberührt.</p></article>
+<article><h3>Isolierte Sandbox</h3><p>Der Agent läuft in einer Docker Sandbox (<code>sbx</code>) und nicht direkt auf deinem Rechner. Netzwerkfreigaben sind pro Sandbox konfiguriert.</p></article>
+<article><h3>Drei Agenten</h3><p>Claude Code, GitHub Copilot CLI und (experimentell) Google Antigravity. Ein Workspace, frei wählbarer Agent.</p></article>
+<article><h3>Stack-Profile</h3><p>Die Profile <code>kotlin-spring</code> und <code>react</code> bringen passende Images und Konfiguration mit und sind kombinierbar.</p></article>
+<article><h3>Secrets ohne Klartext</h3><p>Die Sandbox sieht nur Platzhalter. Der sbx-Proxy setzt den echten Wert in Requests an erlaubte Hosts ein. Werte landen weder in Logs noch im State.</p></article>
+<article><h3>Wiederaufnehmbar</h3><p>Ein erneuter <code>boxai up</code> setzt fort, wo er aufgehört hat. Mit <code>--dry-run</code> siehst du vorab jedes git- und sbx-Kommando.</p></article>
+</div>
+</section>
+
+<section class="wrap how">
+<h2>So funktioniert es</h2>
+<ol class="steps">
+<li><b>Scannen</b><span>boxai findet die Git-Repos unter deinem Projektordner.</span></li>
+<li><b>Worktrees</b><span>Pro Repo entsteht ein Worktree auf einem gemeinsamen Feature-Branch.</span></li>
+<li><b>Kit</b><span>Agent- und Skill-Dateien, Profile und Secrets werden zu einem Kit gebündelt.</span></li>
+<li><b>Sandbox</b><span>Die Sandbox startet, und der Agent legt los.</span></li>
+</ol>
+</section>
+
+<section class="wrap band">
+<h2>Bereit?</h2>
+<p>Ein statisches Go-Binary für Linux und macOS. Installiert in einer Minute.</p>
+<div class="cta"><a class="btn primary" href="installation.html">Jetzt installieren</a></div>
+</section>
+
+<footer><div class="wrap">boxai · <a href="https://github.com/feierabendgewitter/boxai">Quellcode auf GitHub</a> · Ein Agent, mehrere Repos, sicher in einer Sandbox.</div></footer>
+</body>
+</html>

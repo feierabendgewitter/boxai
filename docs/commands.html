@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kommandos · boxai</title>
+<meta name="description" content="Alle boxai-Kommandos im Überblick.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+<a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><use href="favicon.svg#i"/></svg>boxai</a>
+<nav><a href="index.html">Start</a><a href="installation.html">Installation</a><a href="getting-started.html">Erste Schritte</a><a href="configuration.html">Konfiguration</a><a href="commands.html" aria-current="page">Kommandos</a><a href="security.html">Sicherheit</a><a class="gh" href="https://github.com/feierabendgewitter/boxai">GitHub</a></nav>
+</div></header>
+<main class="wrap doc"><h1>Kommandos</h1><p class="lead">Alles, was die CLI kann.</p>
+<table><tr><th>Kommando</th><th>Zweck</th></tr><tr><td><code>boxai up</code></td><td>Worktrees und Sandbox anlegen, Agent starten; ein erneuter Lauf setzt fort</td></tr><tr><td><code>boxai scan</code></td><td>Repos unter einem Ordner auflisten</td></tr><tr><td><code>boxai list</code></td><td>Workspaces und Sandbox-Status</td></tr><tr><td><code>boxai attach &lt;name&gt;</code></td><td>Agent erneut starten</td></tr><tr><td><code>boxai stop &lt;name&gt;</code></td><td>Sandbox anhalten</td></tr><tr><td><code>boxai rm &lt;name&gt;</code></td><td>Sandbox, Worktrees, Kit und State entfernen; Branches bleiben ohne <code>--delete-branches</code></td></tr><tr><td><code>boxai doctor</code></td><td>Voraussetzungen prüfen; <code>--network</code> prüft Profil-Freigaben gegen die sbx-Policy</td></tr><tr><td><code>boxai init</code></td><td><code>boxai.yaml</code> und <code>secrets.example.yaml</code> schreiben</td></tr><tr><td><code>boxai agent-help</code></td><td>Anleitung für KI-Agenten ausgeben, die boxai bedienen</td></tr></table>
+<h2>Wichtige Optionen von <code>up</code></h2>
+<table>
+<tr><th>Option</th><th>Bedeutung</th></tr>
+<tr><td><code>--name</code></td><td>Name des Workspaces</td></tr>
+<tr><td><code>--repo</code></td><td>Repo hinzufügen, mehrfach nutzbar</td></tr>
+<tr><td><code>--agent</code></td><td><code>claude</code>, <code>copilot</code>, <code>antigravity</code></td></tr>
+<tr><td><code>--profile</code></td><td>Kommagetrennte Stack-Profile</td></tr>
+<tr><td><code>--config</code></td><td>Konfiguration aus <code>boxai.yaml</code> laden</td></tr>
+<tr><td><code>--dry-run</code></td><td>Kommandos nur anzeigen</td></tr>
+</table>
+<p>Mit <code>boxai &lt;kommando&gt; --help</code> siehst du alle Optionen.</p>
+<h2>Für KI-Agenten</h2>
+<p><code>boxai agent-help</code> gibt eine Anleitung aus, mit der ein KI-Agent boxai selbst bedienen kann.</p>
+</main>
+<footer><div class="wrap">boxai · <a href="https://github.com/feierabendgewitter/boxai">Quellcode auf GitHub</a> · Ein Agent, mehrere Repos, sicher in einer Sandbox.</div></footer>
+</body>
+</html>
