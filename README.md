@@ -55,3 +55,7 @@ Der Agent kann über den Mount von `<repo>/.git` Objekte und Branches deiner Hau
 ## Dokumentation
 
 Das Projektwissen liegt als OKF-Bundle in [`.okf/`](.okf/index.md). Agents, die an boxai entwickeln, starten bei [`AGENTS.md`](AGENTS.md); Agents, die boxai bedienen, bei `boxai agent-help`.
+
+## Lizenz
+
+[MIT](LICENSE)
