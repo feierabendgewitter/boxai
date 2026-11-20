@@ -1,43 +1,43 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Erste Schritte · boxai</title>
-<meta name="description" content="Erster Start mit boxai: boxai up, Konfigurationsdatei, Dry-Run und Alltagskommandos.">
+<title>Getting started · boxai</title>
+<meta name="description" content="First run with boxai: boxai up, config file, dry run and everyday commands.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="top"><div class="wrap bar">
 <a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><use href="favicon.svg#i"/></svg>boxai</a>
-<nav><a href="index.html">Start</a><a href="installation.html">Installation</a><a href="getting-started.html" aria-current="page">Erste Schritte</a><a href="configuration.html">Konfiguration</a><a href="commands.html">Kommandos</a><a href="security.html">Sicherheit</a><a class="gh" href="https://github.com/feierabendgewitter/boxai">GitHub</a></nav>
+<nav><a href="index.html">Home</a><a href="installation.html">Installation</a><a href="getting-started.html" aria-current="page">Getting started</a><a href="configuration.html">Configuration</a><a href="commands.html">Commands</a><a href="security.html">Security</a><a class="gh" href="https://github.com/feierabendgewitter/boxai">GitHub</a></nav>
 </div></header>
-<main class="wrap doc"><h1>Erste Schritte</h1><p class="lead">Vom Projektordner zur laufenden Sandbox.</p>
-<h2>Interaktiv starten</h2>
-<p>Wechsle in den Ordner, der deine Repos enthält, und starte <code>boxai up</code>. Es fragt Name, Repos und Agent ab.</p>
-<pre><code>cd ~/projekte
+<main class="wrap doc"><h1>Getting started</h1><p class="lead">From project folder to running sandbox.</p>
+<h2>Start interactively</h2>
+<p>Change into the folder that contains your repos and run <code>boxai up</code>. It asks for the name, repos and agent.</p>
+<pre><code>cd ~/projects
 boxai up</code></pre>
-<h2>Nicht-interaktiv</h2>
+<h2>Non-interactive</h2>
 <pre><code>boxai up --name shop \
   --repo backend --repo frontend \
   --agent claude --profile kotlin-spring,react</code></pre>
-<h2>Mit Konfigurationsdatei</h2>
-<p>Für wiederholbare Setups legst du dir eine <code>boxai.yaml</code> an. <code>boxai init</code> schreibt eine Vorlage samt <code>secrets.example.yaml</code>.</p>
+<h2>With a config file</h2>
+<p>For repeatable setups, create a <code>boxai.yaml</code>. <code>boxai init</code> writes a template along with <code>secrets.example.yaml</code>.</p>
 <pre><code>boxai init
 boxai up --config boxai.yaml</code></pre>
-<p>Alle Optionen stehen unter <a href="configuration.html">Konfiguration</a>.</p>
-<h2>Erst ansehen, dann ausführen</h2>
-<p>Mit <code>--dry-run</code> gibt boxai alle <code>git</code>- und <code>sbx</code>-Kommandos aus, ohne sie auszuführen.</p>
+<p>Alle Optionen stehen unter <a href="configuration.html">Configuration</a>.</p>
+<h2>Look first, then run</h2>
+<p>With <code>--dry-run</code>, boxai prints all <code>git</code> and <code>sbx</code> commands without executing them.</p>
 <pre><code>boxai up --config boxai.yaml --dry-run</code></pre>
-<h2>Im Alltag</h2>
-<pre><code>boxai list              # Workspaces und Sandbox-Status
-boxai attach shop       # Agent erneut starten
-boxai stop shop         # Sandbox anhalten
-boxai rm shop           # alles aufräumen (Branches bleiben)</code></pre>
-<p>Eine Übersicht aller Kommandos findest du unter <a href="commands.html">Kommandos</a>.</p>
-<div class="note"><b>Hinweis:</b> Der Agent kann über den Mount von <code>&lt;repo&gt;/.git</code> Objekte und Branches deiner Haupt-Repos verändern. Lies dazu <a href="security.html">Sicherheit</a>.</div>
+<h2>Day to day</h2>
+<pre><code>boxai list              # Workspaces and sandbox status
+boxai attach shop       # Restart the agent
+boxai stop shop         # Stop the sandbox
+boxai rm shop           # clean everything up (branches stay)</code></pre>
+<p>An overview of all commands is on the <a href="commands.html">Commands</a> page.</p>
+<div class="note"><b>Note:</b> Through the mount of <code>&lt;repo&gt;/.git</code>, the agent can modify objects and branches of your main repos. See <a href="security.html">Security</a>.</div>
 </main>
-<footer><div class="wrap">boxai · <a href="https://github.com/feierabendgewitter/boxai">Quellcode auf GitHub</a> · Ein Agent, mehrere Repos, sicher in einer Sandbox.</div></footer>
+<footer><div class="wrap">boxai · <a href="https://github.com/feierabendgewitter/boxai">Source on GitHub</a> · One agent, multiple repos, safe in a sandbox.</div></footer>
 </body>
 </html>

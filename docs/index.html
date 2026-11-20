@@ -1,60 +1,60 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>boxai</title>
-<meta name="description" content="boxai bündelt mehrere Git-Repos als Worktrees und startet sie in einer Docker Sandbox mit Claude Code, Copilot CLI oder Antigravity.">
+<meta name="description" content="boxai bundles multiple Git repos as worktrees and launches them in a Docker sandbox with Claude Code, Copilot CLI or Antigravity.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="top"><div class="wrap bar">
 <a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><use href="favicon.svg#i"/></svg>boxai</a>
-<nav><a href="index.html" aria-current="page">Start</a><a href="installation.html">Installation</a><a href="getting-started.html">Erste Schritte</a><a href="configuration.html">Konfiguration</a><a href="commands.html">Kommandos</a><a href="security.html">Sicherheit</a><a class="gh" href="https://github.com/feierabendgewitter/boxai">GitHub</a></nav>
+<nav><a href="index.html" aria-current="page">Home</a><a href="installation.html">Installation</a><a href="getting-started.html">Getting started</a><a href="configuration.html">Configuration</a><a href="commands.html">Commands</a><a href="security.html">Security</a><a class="gh" href="https://github.com/feierabendgewitter/boxai">GitHub</a></nav>
 </div></header>
 
 <section class="hero"><div class="wrap">
-<p class="eyebrow">Docker Sandbox · Git Worktrees · KI-Agenten</p>
-<h1>Ein Agent. Mehrere Repos.<br><span class="accent">Vom Host isoliert.</span></h1>
-<p class="lead">boxai bündelt mehrere Git-Repos als Worktrees zu einem Workspace und startet ihn in einer Docker Sandbox mit Claude Code, GitHub Copilot CLI oder Google Antigravity.</p>
-<div class="cta"><a class="btn primary" href="getting-started.html">Erste Schritte</a><a class="btn" href="installation.html">Installation</a></div>
-<div class="term" aria-label="Beispielsitzung"><pre><code><span class="c">$</span> cd ~/projekte
+<p class="eyebrow">Docker Sandbox · Git Worktrees · AI Agents</p>
+<h1>One agent. Multiple repos.<br><span class="accent">Isolated from the host.</span></h1>
+<p class="lead">boxai bundles multiple Git repos as worktrees into one workspace and launches it in a Docker sandbox with Claude Code, GitHub Copilot CLI or Google Antigravity.</p>
+<div class="cta"><a class="btn primary" href="getting-started.html">Getting started</a><a class="btn" href="installation.html">Installation</a></div>
+<div class="term" aria-label="Example session"><pre><code><span class="c">$</span> cd ~/projects
 <span class="c">$</span> boxai up --name shop --repo backend --repo frontend \
       --agent claude --profile kotlin-spring,react
-<span class="ok">✓</span> Worktrees angelegt   <span class="d">backend, frontend @ feature/x</span>
-<span class="ok">✓</span> Kit erzeugt          <span class="d">Agent- und Skill-Dateien aus den Repos</span>
-<span class="ok">✓</span> Sandbox gestartet    <span class="d">boxai-shop · claude</span></code></pre></div>
+<span class="ok">✓</span> Worktrees created     <span class="d">backend, frontend @ feature/x</span>
+<span class="ok">✓</span> Kit generated         <span class="d">agent and skill files from the repos</span>
+<span class="ok">✓</span> Sandbox started       <span class="d">boxai-shop · claude</span></code></pre></div>
 </div></section>
 
 <section class="wrap feat">
-<h2>Was boxai kann</h2>
+<h2>What boxai can do</h2>
 <div class="grid">
-<article><h3>Repo-übergreifend arbeiten</h3><p>Backend, Frontend und geteilte Bibliotheken liegen als Worktrees nebeneinander im selben Workspace. Der Agent sieht den ganzen Zusammenhang, deine Checkouts bleiben unberührt.</p></article>
-<article><h3>Isolierte Sandbox</h3><p>Der Agent läuft in einer Docker Sandbox (<code>sbx</code>) und nicht direkt auf deinem Rechner. Netzwerkfreigaben sind pro Sandbox konfiguriert.</p></article>
-<article><h3>Drei Agenten</h3><p>Claude Code, GitHub Copilot CLI und (experimentell) Google Antigravity. Ein Workspace, frei wählbarer Agent.</p></article>
-<article><h3>Stack-Profile</h3><p>Die Profile <code>kotlin-spring</code> und <code>react</code> bringen passende Images und Konfiguration mit und sind kombinierbar.</p></article>
-<article><h3>Secrets ohne Klartext</h3><p>Die Sandbox sieht nur Platzhalter. Der sbx-Proxy setzt den echten Wert in Requests an erlaubte Hosts ein. Werte landen weder in Logs noch im State.</p></article>
-<article><h3>Wiederaufnehmbar</h3><p>Ein erneuter <code>boxai up</code> setzt fort, wo er aufgehört hat. Mit <code>--dry-run</code> siehst du vorab jedes git- und sbx-Kommando.</p></article>
+<article><h3>Work across repos</h3><p>Backend, frontend and shared libraries sit side by side as worktrees in the same workspace. The agent sees the whole picture, and your checkouts stay untouched.</p></article>
+<article><h3>Isolated sandbox</h3><p>The agent runs in a Docker sandbox (<code>sbx</code>) and not directly on your machine. Network allowances are configured per sandbox.</p></article>
+<article><h3>Three agents</h3><p>Claude Code, GitHub Copilot CLI and (experimental) Google Antigravity. One workspace, your choice of agent.</p></article>
+<article><h3>Stack profiles</h3><p>The <code>kotlin-spring</code> and <code>react</code> profiles ship matching images and configuration and can be combined.</p></article>
+<article><h3>Secrets without plaintext</h3><p>The sandbox only sees placeholders. The sbx proxy inserts the real value into requests to allowed hosts. Values end up in neither logs nor state.</p></article>
+<article><h3>Resumable</h3><p>Running <code>boxai up</code> again picks up where it left off. With <code>--dry-run</code> you see every git and sbx command beforehand.</p></article>
 </div>
 </section>
 
 <section class="wrap how">
-<h2>So funktioniert es</h2>
+<h2>How it works</h2>
 <ol class="steps">
-<li><b>Scannen</b><span>boxai findet die Git-Repos unter deinem Projektordner.</span></li>
-<li><b>Worktrees</b><span>Pro Repo entsteht ein Worktree auf einem gemeinsamen Feature-Branch.</span></li>
-<li><b>Kit</b><span>Agent- und Skill-Dateien, Profile und Secrets werden zu einem Kit gebündelt.</span></li>
-<li><b>Sandbox</b><span>Die Sandbox startet, und der Agent legt los.</span></li>
+<li><b>Scan</b><span>boxai finds the Git repos under your project folder.</span></li>
+<li><b>Worktrees</b><span>Each repo gets a worktree on a shared feature branch.</span></li>
+<li><b>Kit</b><span>Agent and skill files, profiles and secrets are bundled into a kit.</span></li>
+<li><b>Sandbox</b><span>The sandbox starts and the agent gets to work.</span></li>
 </ol>
 </section>
 
 <section class="wrap band">
-<h2>Bereit?</h2>
-<p>Ein statisches Go-Binary für Linux und macOS. Installiert in einer Minute.</p>
-<div class="cta"><a class="btn primary" href="installation.html">Jetzt installieren</a></div>
+<h2>Ready?</h2>
+<p>A static Go binary for Linux and macOS. Installed in a minute.</p>
+<div class="cta"><a class="btn primary" href="installation.html">Install now</a></div>
 </section>
 
-<footer><div class="wrap">boxai · <a href="https://github.com/feierabendgewitter/boxai">Quellcode auf GitHub</a> · Ein Agent, mehrere Repos, sicher in einer Sandbox.</div></footer>
+<footer><div class="wrap">boxai · <a href="https://github.com/feierabendgewitter/boxai">Source on GitHub</a> · One agent, multiple repos, safe in a sandbox.</div></footer>
 </body>
 </html>

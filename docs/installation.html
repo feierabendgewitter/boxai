@@ -1,46 +1,46 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Installation · boxai</title>
-<meta name="description" content="boxai installieren: Voraussetzungen, sbx, go install, Releases.">
+<meta name="description" content="Install boxai: prerequisites, sbx, go install, releases.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="top"><div class="wrap bar">
 <a class="brand" href="index.html"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><use href="favicon.svg#i"/></svg>boxai</a>
-<nav><a href="index.html">Start</a><a href="installation.html" aria-current="page">Installation</a><a href="getting-started.html">Erste Schritte</a><a href="configuration.html">Konfiguration</a><a href="commands.html">Kommandos</a><a href="security.html">Sicherheit</a><a class="gh" href="https://github.com/feierabendgewitter/boxai">GitHub</a></nav>
+<nav><a href="index.html">Home</a><a href="installation.html" aria-current="page">Installation</a><a href="getting-started.html">Getting started</a><a href="configuration.html">Configuration</a><a href="commands.html">Commands</a><a href="security.html">Security</a><a class="gh" href="https://github.com/feierabendgewitter/boxai">GitHub</a></nav>
 </div></header>
-<main class="wrap doc"><h1>Installation</h1><p class="lead">Ein Binary, ein paar Voraussetzungen.</p>
-<h2>Voraussetzungen</h2>
+<main class="wrap doc"><h1>Installation</h1><p class="lead">One binary, a few prerequisites.</p>
+<h2>Prerequisites</h2>
 <ul>
-<li>macOS oder Linux, jeweils mit <code>git</code></li>
-<li><code>sbx</code> ab Version 0.51</li>
-<li>Docker, nur für <code>make images</code> und <code>--dockerfile</code></li>
+<li>macOS or Linux, each with <code>git</code></li>
+<li><code>sbx</code> version 0.51 or later</li>
+<li>Docker, only for <code>make images</code> and <code>--dockerfile</code></li>
 </ul>
-<h2>1. sbx installieren</h2>
+<h2>1. Install sbx</h2>
 <pre><code>brew install docker/tap/sbx
 sbx login</code></pre>
-<p>Mehr dazu in der <a href="https://docs.docker.com/ai/sandboxes/">Docker-Sandboxes-Dokumentation</a>.</p>
-<h2>2. boxai installieren</h2>
-<h3>Mit Go</h3>
+<p>More in the <a href="https://docs.docker.com/ai/sandboxes/">Docker Sandboxes documentation</a>.</p>
+<h2>2. Install boxai</h2>
+<h3>With Go</h3>
 <pre><code>go install github.com/feierabendgewitter/boxai/cmd/boxai@latest</code></pre>
-<h3>Aus einem Release</h3>
-<p>Fertige Binaries gibt es unter <a href="https://github.com/feierabendgewitter/boxai/releases">Releases</a>. Entpacken und in den <code>PATH</code> legen.</p>
-<h3>Aus dem Quellcode</h3>
+<h3>From a release</h3>
+<p>Prebuilt binaries are available under <a href="https://github.com/feierabendgewitter/boxai/releases">Releases</a>. Unpack them and put them on your <code>PATH</code>.</p>
+<h3>From source</h3>
 <pre><code>git clone https://github.com/feierabendgewitter/boxai.git
 cd boxai
-make build        # erzeugt bin/boxai</code></pre>
-<h2>3. Installation prüfen</h2>
+make build        # produces bin/boxai</code></pre>
+<h2>3. Verify the installation</h2>
 <pre><code>boxai doctor</code></pre>
-<p><code>boxai doctor</code> prüft die Voraussetzungen. Mit <code>--network</code> vergleicht es zusätzlich die Freigaben deiner Profile mit der sbx-Policy.</p>
+<p><code>boxai doctor</code> checks the prerequisites. With <code>--network</code> it also compares your profiles' allowances with the sbx policy.</p>
 <h2>Images (optional)</h2>
-<p>Ohne eigene Images startet der Agent mit seinem Standard-Image, und boxai weist darauf hin, welche Tools dort fehlen. Die Images mit den Profilen baust du aus dem Repository:</p>
+<p>Without custom images, the agent starts with its default image, and boxai points out which tools are missing there. You build the images with the profiles from the repository:</p>
 <pre><code>make images</code></pre>
-<p class="next"><a href="getting-started.html">Weiter: Erste Schritte →</a></p>
+<p class="next"><a href="getting-started.html">Next: Getting started →</a></p>
 </main>
-<footer><div class="wrap">boxai · <a href="https://github.com/feierabendgewitter/boxai">Quellcode auf GitHub</a> · Ein Agent, mehrere Repos, sicher in einer Sandbox.</div></footer>
+<footer><div class="wrap">boxai · <a href="https://github.com/feierabendgewitter/boxai">Source on GitHub</a> · One agent, multiple repos, safe in a sandbox.</div></footer>
 </body>
 </html>
