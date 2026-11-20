@@ -1,5 +1,7 @@
 # boxai
 
+**Deutsch** | [English](README.en.md)
+
 `boxai` bündelt mehrere Git-Repos als Worktrees zu einem Workspace und startet ihn in einer [Docker Sandbox](https://docs.docker.com/ai/sandboxes/) mit Claude Code, GitHub Copilot CLI oder (experimentell) Google Antigravity. Ein Agent arbeitet so repo-übergreifend und bleibt vom Host isoliert.
 
 ## Voraussetzungen
